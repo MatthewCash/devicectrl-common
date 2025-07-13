@@ -1,0 +1,16 @@
+[package]
+name = "devicectrl-common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { version = "1.0.98", default-features = false }
+arrayvec = { version = "0.7.6", features = ["serde"], default-features = false }
+discretionary = "0.1.0"
+paste = "1.0.15"
+serde = { version = "1.0.219", default-features = false }
+serde_derive = "1.0.219"
+
+[features]
+default = ["alloc"]
+alloc = []
