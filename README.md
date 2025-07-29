@@ -8,3 +8,13 @@ Uses `no-std` to support embedded devices but may require `alloc` in the future.
 
 - Extract networking logic from clients and devices into this crate.
 - Represent integer states better by allowing percentages and explicitly specifying allowed ranges.
+
+## Dependents
+
+### [devicectrl-server](https://github.com/MatthewCash/devicectrl-server)
+
+Cental server for processing update requests from clients by sending update commands to devices and relaying state update notifications.
+
+### [devicectrl-input](https://github.com/MatthewCash/devicectrl-input)
+
+Client for sending update requests generated from input events from physical devices like keyboards.
