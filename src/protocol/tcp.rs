@@ -21,7 +21,7 @@ pub type FailureMessage = ArrayString<100>;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ClientBoundTcpMessage {
-    UnknownCommand,
+    Unimplemented,
     RequestReceived,
     UpdateNotification(UpdateNotification),
     Failure(Option<FailureMessage>),
