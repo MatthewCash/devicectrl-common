@@ -18,3 +18,7 @@ Cental server for processing update requests from clients by sending update comm
 ### [devicectrl-input](https://github.com/MatthewCash/devicectrl-input)
 
 Client for sending update requests generated from input events from physical devices like keyboards.
+
+### [devicectrl-fan-controller](https://github.com/MatthewCash/devicectrl-fan-controller)
+
+Device implementation to communicate with FanLamp Pro V2 ceiling fans.
