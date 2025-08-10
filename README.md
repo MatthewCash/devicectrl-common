@@ -6,8 +6,8 @@ Uses `no-std` to support embedded devices but may require `alloc` in the future.
 
 ## TODO
 
-- Extract networking logic from clients and devices into this crate.
-- Represent integer states better by allowing percentages and explicitly specifying allowed ranges.
+-   Extract networking logic from clients and devices into this crate.
+-   Represent integer states better by allowing percentages and explicitly specifying allowed ranges.
 
 ## Dependents
 
@@ -22,3 +22,7 @@ Client for sending update requests generated from input events from physical dev
 ### [devicectrl-fan-controller](https://github.com/MatthewCash/devicectrl-fan-controller)
 
 Device implementation to communicate with FanLamp Pro V2 ceiling fans.
+
+### [devicectrl-esp32-switch](https://github.com/MatthewCash/devicectrl-esp32-switch)
+
+Device implementation for a simple switch running on an esp32c6.
