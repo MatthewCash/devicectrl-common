@@ -11,7 +11,7 @@ use crate::{DeviceId, UpdateNotification, UpdateRequest};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
-pub enum ServerBoundTcpMessage {
+pub enum ServerBoundSocketMessage {
     UpdateRequest(UpdateRequest),
     StateQuery { device_id: DeviceId },
 }
@@ -20,7 +20,7 @@ pub type FailureMessage = ArrayString<100>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
-pub enum ClientBoundTcpMessage {
+pub enum ClientBoundSocketMessage {
     Unimplemented,
     RequestReceived,
     UpdateNotification(UpdateNotification),
@@ -28,7 +28,7 @@ pub enum ClientBoundTcpMessage {
 }
 
 #[cfg(feature = "alloc")]
-impl From<anyhow::Error> for ClientBoundTcpMessage {
+impl From<anyhow::Error> for ClientBoundSocketMessage {
     fn from(err: anyhow::Error) -> Self {
         let message = err.chain().next().map(|c| c.to_string());
 
