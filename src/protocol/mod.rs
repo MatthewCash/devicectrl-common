@@ -1,3 +1,4 @@
 pub mod http;
+pub mod krypton;
 pub mod simple;
-pub mod tcp;
+pub mod socket;
