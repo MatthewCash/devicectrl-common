@@ -3,8 +3,8 @@
 use arrayvec::ArrayString;
 use device_types::{
     ceiling_fan::{CeilingFanState, CeilingFanStateUpdate},
-    color_bulb::{ColorBulbState, ColorBulbStateUpdate},
-    led_strip::{LedStripState, LedStripStateUpdate},
+    color_light::{ColorLightState, ColorLightStateUpdate},
+    dimmable_light::{DimmableLightState, DimmableLightStateUpdate},
     switch::{SwitchState, SwitchStateUpdate},
 };
 use serde_derive::{Deserialize, Serialize};
@@ -78,8 +78,8 @@ pub type DeviceId = ArrayString<32>;
 
 define_device_enums! {
     Switch,
-    ColorBulb,
-    LedStrip,
+    ColorLight,
+    DimmableLight,
     CeilingFan,
 }
 

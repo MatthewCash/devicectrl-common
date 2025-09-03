@@ -1,6 +1,6 @@
 pub mod ceiling_fan;
-pub mod color_bulb;
-pub mod led_strip;
+pub mod color_light;
+pub mod dimmable_light;
 pub mod switch;
 
 macro_rules! define_state_structs {
