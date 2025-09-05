@@ -27,6 +27,10 @@ Device implementation to communicate with FanLamp Pro V2 ceiling fans.
 
 Device implementation for a simple switch running on an esp32c6.
 
-### [devicectrl-esp32-acpi-switch](https://github.com/MatthewCash/devicectrl-esp32-switch)
+### [devicectrl-esp32-acpi-switch](https://github.com/MatthewCash/devicectrl-esp32-acpi-switch)
 
 Device implementation for a switch managing ACPI power control running on an esp32c6.
+
+### [devicectrl-esp32-dimmable-light](https://github.com/MatthewCash/devicectrl-esp32-dimmable-light)
+
+Device implementation for a simple dimmable light running on an esp32c6.
