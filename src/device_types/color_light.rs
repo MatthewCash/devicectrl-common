@@ -1,8 +1,9 @@
-use super::define_state_structs;
+use serde_derive::{Deserialize, Serialize};
 
-define_state_structs!(ColorLightState, {
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ColorLightState {
     pub power: bool,
     pub brightness: u8,
     pub hue: u8,
     pub saturation: u8,
-});
+}

@@ -2,15 +2,16 @@
 
 use arrayvec::ArrayString;
 use device_types::{
-    ceiling_fan::{CeilingFanState, CeilingFanStateUpdate},
-    color_light::{ColorLightState, ColorLightStateUpdate},
-    dimmable_light::{DimmableLightState, DimmableLightStateUpdate},
-    switch::{SwitchState, SwitchStateUpdate},
+    ceiling_fan::CeilingFanState, color_light::ColorLightState, dimmable_light::DimmableLightState,
+    switch::SwitchState,
 };
 use serde_derive::{Deserialize, Serialize};
 
+use crate::updates::AttributeUpdate;
+
 pub mod device_types;
 pub mod protocol;
+pub mod updates;
 
 // Macro to declare DeviceType enum with just device types and DeviceState enum that maps device types to its corresponding device state and a method to get a DeviceState's device type
 macro_rules! define_device_enums {
@@ -52,24 +53,6 @@ macro_rules! define_device_enums {
                     self.kind() == DeviceType::Unknown || self.kind() == kind
                 }
             }
-
-            #[derive(Clone, Debug, Serialize, Deserialize)]
-            #[non_exhaustive]
-            pub enum DeviceStateUpdate {
-                $(
-                    $variant([<$variant StateUpdate>]),
-                )*
-            }
-
-            impl DeviceStateUpdate {
-                pub fn kind(&self) -> DeviceType {
-                    match self {
-                        $(
-                            DeviceStateUpdate::$variant(_) => DeviceType::$variant,
-                        )*
-                    }
-                }
-            }
         }
     };
 }
@@ -89,14 +72,14 @@ define_device_enums! {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UpdateRequest {
     pub device_id: DeviceId,
-    pub change_to: DeviceStateUpdate,
+    pub update: AttributeUpdate,
 }
 
 // Sent from server to devices
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UpdateCommand {
     pub device_id: DeviceId,
-    pub change_to: DeviceStateUpdate,
+    pub updates: AttributeUpdate,
 }
 
 // Sent from devices to server and server to clients

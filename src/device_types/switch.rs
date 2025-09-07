@@ -1,5 +1,6 @@
-use super::define_state_structs;
+use serde_derive::{Deserialize, Serialize};
 
-define_state_structs!(SwitchState, {
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SwitchState {
     pub power: bool,
-});
+}

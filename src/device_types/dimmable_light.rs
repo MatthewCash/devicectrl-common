@@ -1,6 +1,7 @@
-use super::define_state_structs;
+use serde_derive::{Deserialize, Serialize};
 
-define_state_structs!(DimmableLightState, {
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct DimmableLightState {
     pub power: bool,
     pub brightness: u8,
-});
+}
