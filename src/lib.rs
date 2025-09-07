@@ -30,7 +30,7 @@ macro_rules! define_device_enums {
                 Unknown
             }
 
-            #[derive(Clone, Debug, Serialize, Deserialize)]
+            #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
             #[non_exhaustive]
             pub enum DeviceState {
                 $(
@@ -69,21 +69,21 @@ define_device_enums! {
 }
 
 // Sent from clients to server
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct UpdateRequest {
     pub device_id: DeviceId,
     pub update: AttributeUpdate,
 }
 
 // Sent from server to devices
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct UpdateCommand {
     pub device_id: DeviceId,
-    pub updates: AttributeUpdate,
+    pub update: AttributeUpdate,
 }
 
 // Sent from devices to server and server to clients
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct UpdateNotification {
     pub device_id: DeviceId,
     pub reachable: bool,
