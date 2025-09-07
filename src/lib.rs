@@ -76,6 +76,8 @@ macro_rules! define_device_enums {
 
 pub type DeviceId = ArrayString<32>;
 
+pub type SceneId = ArrayString<32>;
+
 define_device_enums! {
     Switch,
     ColorLight,

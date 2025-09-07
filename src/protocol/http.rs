@@ -7,12 +7,13 @@ extern crate alloc;
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
 
-use crate::UpdateRequest;
+use crate::{SceneId, UpdateRequest};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ServerBoundHttpMessage {
     UpdateRequest(UpdateRequest),
+    ActivateScene(SceneId),
 }
 
 pub type FailureMessage = ArrayString<100>;

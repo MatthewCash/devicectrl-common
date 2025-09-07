@@ -7,12 +7,13 @@ extern crate alloc;
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
 
-use crate::{DeviceId, UpdateNotification, UpdateRequest};
+use crate::{DeviceId, SceneId, UpdateNotification, UpdateRequest};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ServerBoundSocketMessage {
     UpdateRequest(UpdateRequest),
+    ActivateScene(SceneId),
     StateQuery { device_id: DeviceId },
 }
 
