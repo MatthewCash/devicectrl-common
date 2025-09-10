@@ -82,6 +82,15 @@ pub struct UpdateCommand {
     pub update: AttributeUpdate,
 }
 
+impl From<UpdateRequest> for UpdateCommand {
+    fn from(request: UpdateRequest) -> Self {
+        Self {
+            device_id: request.device_id,
+            update: request.update,
+        }
+    }
+}
+
 // Sent from devices to server and server to clients
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct UpdateNotification {
