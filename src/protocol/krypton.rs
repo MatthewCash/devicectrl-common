@@ -56,3 +56,12 @@ impl From<anyhow::Error> for ServerBoundKryptonMessage {
         }))
     }
 }
+
+pub fn generate_sni(device_id: &DeviceId) -> ArrayString<49> {
+    let mut sni = ArrayString::<49>::new();
+
+    sni.push_str("krypton-deviceid=");
+    sni.push_str(device_id);
+
+    sni
+}
