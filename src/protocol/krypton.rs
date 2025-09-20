@@ -10,8 +10,6 @@ use alloc::string::ToString;
 use crate::DeviceId;
 use crate::{UpdateCommand, UpdateNotification};
 
-pub const SIGNATURE_LEN: usize = 64;
-
 pub type FailureMessage = ArrayString<100>;
 
 // Message sent from server to devices
