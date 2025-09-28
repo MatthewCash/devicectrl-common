@@ -20,7 +20,7 @@ This crate contains the specification and message enums source for the following
 
 A simple JSON-serialized protocol based on TCP means for devices where implementing TLS is impractical.
 
-Once the TCP connection has been established, both sides must send a randomly generated u32 nonce. Nonces are connection-specific and **must** be regenerated for each connection attempt.
+Once the TCP connection has been established, both sides must send a randomly generated u32 nonce. Nonces are connection-specific and **must** be regenerated for each connection attempt. Nonces must use big-endian byte ordering.
 
 ```
 Client -> Server:
@@ -32,12 +32,14 @@ Server -> Client:
 
 After nonces are exchanged, the device will identify itself by sending the [`ServerBoundSimpleMessage::Identify(DeviceId)`](src/protocol/simple.rs) message. The identify message is sent so that the server can select the correct verifying key for the device, ensuring the integrity of future messages sent.
 
+Data lengths must use big-endian byte ordering.
+
 ```
 Client -> Server:
 [ u32 len | data (len bytes) ]
 ```
 
-Now that the server can verify the device's messages, future messages will be send with an incrementing nonce and signature. The sent must be derived from the nonce received from the other side, incremented _before_ each message. Example: if the server sends initial nonce `22` to the client, the client's next message will contain nonce `23`, `24`, `25`, `...`.
+Now that the server can verify the device's messages, future messages will be send with an incrementing nonce and signature. The sent must be derived from the nonce received from the other side, incremented _before_ each message. Example: if the server sends initial nonce `22` to the client, the client's next message will contain nonce `23`, `24`, `25`, `...`. Nonces must wrap around to 0 after hitting the u32 limit.
 
 ```
 Client -> Server / Server -> Client
