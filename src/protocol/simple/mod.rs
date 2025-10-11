@@ -10,6 +10,9 @@ use alloc::string::ToString;
 use crate::DeviceId;
 use crate::{UpdateCommand, UpdateNotification};
 
+#[cfg(feature = "esp")]
+pub mod esp;
+
 pub const SIGNATURE_LEN: usize = 64;
 
 pub type FailureMessage = ArrayString<100>;

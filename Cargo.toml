@@ -10,6 +10,40 @@ paste = "1.0.15"
 serde = { version = "1.0.219", default-features = false }
 serde_derive = "1.0.219"
 
+# Optional dependencies for embedded targets
+esp-hal = { version = "1.0.0-rc.0", default-features = false, features = ["unstable"], optional = true }
+esp32-ecdsa = { git = "https://github.com/MatthewCash/esp32-ecdsa.git", optional = true }
+serde_json = { version = "1.0.142", default-features = false, features = ["alloc"], optional = true }
+embassy-sync = { version = "0.7.2", features = ["defmt"], optional = true }
+embassy-futures = { version = "0.1.2", features = ["defmt"], optional = true }
+embassy-net = { version = "0.7.0", features = ["proto-ipv4","tcp","medium-ethernet",], optional = true }
+embedded-io-async = { version = "0.6.1", optional = true }
+embassy-time = { version = "0.5.0", features = ["generic-queue-8"], optional = true }
+rand_core = { version = "0.9.3", optional = true }
+embassy-executor = { version = "0.7.0", features = ["defmt",], optional = true }
+
 [features]
 default = ["alloc"]
+
+esp32     = ["alloc", "esp", "esp-hal/esp32", "esp32-ecdsa/esp32"]
+esp32s2   = ["alloc", "esp", "esp-hal/esp32s2", "esp32-ecdsa/esp32s2"]
+esp32s3   = ["alloc", "esp", "esp-hal/esp32s3", "esp32-ecdsa/esp32s3"]
+esp32c2   = ["alloc", "esp", "esp-hal/esp32c2", "esp32-ecdsa/esp32c2"]
+esp32c3   = ["alloc", "esp", "esp-hal/esp32c3", "esp32-ecdsa/esp32c3"]
+esp32c6   = ["alloc", "esp", "esp-hal/esp32c6", "esp32-ecdsa/esp32c6"]
+esp32h2   = ["alloc", "esp", "esp-hal/esp32h2", "esp32-ecdsa/esp32h2"]
+
+esp = [
+    "dep:esp-hal",
+    "dep:esp32-ecdsa",
+    "dep:serde_json",
+    "dep:embassy-sync",
+    "dep:embassy-futures",
+    "dep:embassy-net",
+    "dep:embedded-io-async",
+    "dep:embassy-time",
+    "dep:rand_core",
+    "dep:embassy-executor",
+]
+
 alloc = []
