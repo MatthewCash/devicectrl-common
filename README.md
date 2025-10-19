@@ -1,6 +1,6 @@
 # devicectrl-common
 
-This is the common library for `devicectrl`, providing core data structures for devices and the network API.
+This is the common library for `devicectrl`, providing core data structures for devices and the network API along with implementations of some protocols.
 
 devicectrl is a local-first smart home and IoT stack focusing on simplicity, reliability, and speed. I designed it for my own use, it lacks any features that I do not find useful. This project is not complete and will evolve as I add new capabilities.
 

@@ -10,6 +10,9 @@ use alloc::string::ToString;
 use crate::DeviceId;
 use crate::{UpdateCommand, UpdateNotification};
 
+#[cfg(feature = "tokio")]
+pub mod tokio;
+
 #[cfg(feature = "esp")]
 pub mod esp;
 
