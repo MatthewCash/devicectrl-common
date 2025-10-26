@@ -1,8 +1,12 @@
 use anyhow::{Context, Error, Result, anyhow, bail};
 use core::mem::{size_of, size_of_val};
-use p256::ecdsa::{
-    Signature, SigningKey, VerifyingKey,
-    signature::{Signer, Verifier},
+use p256::{
+    NistP256,
+    ecdsa::{
+        Signature, SigningKey, VerifyingKey,
+        signature::{Signer, Verifier},
+    },
+    elliptic_curve::Curve,
 };
 use rand::{TryRngCore, rngs::OsRng};
 use std::net::SocketAddr;
@@ -18,6 +22,11 @@ use crate::{
     DeviceId,
     protocol::simple::{DeviceBoundSimpleMessage, SIGNATURE_LEN, ServerBoundSimpleMessage},
 };
+
+const _: () = assert!(
+    SIGNATURE_LEN == NistP256::ORDER.bits() / 8 * 2, // 8 bits per byte / 2 field elements
+    "Length of two Nist p256 field elements differs from simple protocol's SIGNATURE_LEN"
+);
 
 #[derive(Debug, Clone)]
 pub struct CryptoContext {

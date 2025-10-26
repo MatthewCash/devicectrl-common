@@ -16,6 +16,8 @@ pub mod tokio;
 #[cfg(feature = "esp")]
 pub mod esp;
 
+pub const NONCE_LEN: usize = size_of::<u32>();
+pub const PAYLOAD_LEN_LEN: usize = size_of::<u32>();
 pub const SIGNATURE_LEN: usize = 64;
 
 pub type FailureMessage = ArrayString<100>;

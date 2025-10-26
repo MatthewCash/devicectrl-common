@@ -19,6 +19,11 @@ use crate::{
     protocol::simple::{DeviceBoundSimpleMessage, SIGNATURE_LEN, ServerBoundSimpleMessage},
 };
 
+const _: () = assert!(
+    SIGNATURE_LEN == esp32_ecdsa::SIGNATURE_LEN,
+    "esp32_ecdsa's SIGNATURE_LEN is differs from simple protocol's SIGNATURE_LEN"
+);
+
 #[derive(Debug)]
 pub enum TransportEvent {
     Connected,
