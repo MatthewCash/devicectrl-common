@@ -13,21 +13,21 @@ serde_json = { version = "1.0.142", default-features = false, features = ["alloc
 num-traits = { version = "0.2.19", default-features = false }
 
 # Opional dependencies for tokio targets
-tokio = { version = "1.36.0", default-features = false, features = ["net", "sync", "time", "io-util", "macros"], optional = true }
+tokio = { version = "1.48.0", default-features = false, features = ["net", "sync", "time", "io-util", "macros"], optional = true }
 p256 = { version = "0.13.2", default-features = false, features = ["std", "ecdsa"], optional = true }
 rand = { version = "0.9.2", default-features = false, features = ["std", "os_rng"], optional = true }
 
 
 # Optional dependencies for esp targets
-esp-hal = { version = "1.0.0-rc.0", default-features = false, features = ["unstable"], optional = true }
+esp-hal = { version = "1.0.0", default-features = false, features = ["unstable"], optional = true }
 esp32-ecdsa = { git = "https://github.com/MatthewCash/esp32-ecdsa.git", optional = true }
 embassy-sync = { version = "0.7.2", features = ["defmt"], optional = true }
 embassy-futures = { version = "0.1.2", features = ["defmt"], optional = true }
-embassy-net = { version = "=0.7.0", features = ["proto-ipv4","tcp","medium-ethernet"], optional = true }
+embassy-net = { version = "0.7.1", features = ["proto-ipv4","tcp","medium-ethernet"], optional = true }
 embedded-io-async = { version = "0.6.1", optional = true }
-embassy-time = { version = "0.4.0", features = ["generic-queue-8"], optional = true }
+embassy-time = { version = "0.5.0", features = ["generic-queue-8"], optional = true }
 rand_core = { version = "0.9.3", optional = true }
-embassy-executor = { version = "0.7.0", features = ["defmt",], optional = true }
+embassy-executor = { version = "0.9.1", features = ["defmt"], optional = true }
 
 [features]
 default = ["alloc"]
@@ -40,6 +40,8 @@ tokio = [
     "dep:p256",
 ]
 
+# ONLY EVER ENABLE ONE
+# Note: I have only tested on esp32c6
 esp32     = ["alloc", "esp", "esp-hal/esp32", "esp32-ecdsa/esp32"]
 esp32s2   = ["alloc", "esp", "esp-hal/esp32s2", "esp32-ecdsa/esp32s2"]
 esp32s3   = ["alloc", "esp", "esp-hal/esp32s3", "esp32-ecdsa/esp32s3"]

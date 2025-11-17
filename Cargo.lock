@@ -226,15 +226,6 @@ dependencies = [
 
 [[package]]
 name = "defmt"
-version = "0.3.100"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0963443817029b2024136fc4dd07a5107eb8f977eaf18fcd1fdeb11306b64ad"
-dependencies = [
- "defmt 1.0.1",
-]
-
-[[package]]
-name = "defmt"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "548d977b6da32fa1d1fda2876453da1e7df63ad0304c8b3dae4dbe7b96f39b78"
@@ -385,21 +376,22 @@ dependencies = [
 
 [[package]]
 name = "embassy-executor"
-version = "0.7.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90327bcc66333a507f89ecc4e2d911b265c45f5c9bc241f98eee076752d35ac6"
+checksum = "06070468370195e0e86f241c8e5004356d696590a678d47d6676795b2e439c6b"
 dependencies = [
  "critical-section",
- "defmt 0.3.100",
+ "defmt",
  "document-features",
  "embassy-executor-macros",
+ "embassy-executor-timer-queue",
 ]
 
 [[package]]
 name = "embassy-executor-macros"
-version = "0.6.2"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3577b1e9446f61381179a330fc5324b01d511624c55f25e3c66c9e3c626dbecf"
+checksum = "dfdddc3a04226828316bf31393b6903ee162238576b1584ee2669af215d55472"
 dependencies = [
  "darling 0.20.11",
  "proc-macro2",
@@ -408,12 +400,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "embassy-executor-timer-queue"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fc328bf943af66b80b98755db9106bf7e7471b0cf47dc8559cd9a6be504cc9c"
+
+[[package]]
 name = "embassy-futures"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc2d050bdc5c21e0862a89256ed8029ae6c290a93aecefc73084b3002cdebb01"
 dependencies = [
- "defmt 1.0.1",
+ "defmt",
 ]
 
 [[package]]
@@ -427,13 +425,13 @@ dependencies = [
 
 [[package]]
 name = "embassy-net"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "940c4b9fe5c1375b09a0c6722c0100d6b2ed46a717a34f632f26e8d7327c4383"
+checksum = "0558a231a47e7d4a06a28b5278c92e860f1200f24821d2f365a2f40fe3f3c7b2"
 dependencies = [
  "document-features",
  "embassy-net-driver",
- "embassy-sync 0.6.2",
+ "embassy-sync 0.7.2",
  "embassy-time",
  "embedded-io-async 0.6.1",
  "embedded-nal-async",
@@ -470,7 +468,7 @@ checksum = "73974a3edbd0bd286759b3d483540f0ebef705919a5f56f4fc7709066f71689b"
 dependencies = [
  "cfg-if",
  "critical-section",
- "defmt 1.0.1",
+ "defmt",
  "embedded-io-async 0.6.1",
  "futures-core",
  "futures-sink",
@@ -479,9 +477,9 @@ dependencies = [
 
 [[package]]
 name = "embassy-time"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f820157f198ada183ad62e0a66f554c610cdcd1a9f27d4b316358103ced7a1f8"
+checksum = "f4fa65b9284d974dad7a23bb72835c4ec85c0b540d86af7fc4098c88cff51d65"
 dependencies = [
  "cfg-if",
  "critical-section",
@@ -491,7 +489,7 @@ dependencies = [
  "embedded-hal 0.2.7",
  "embedded-hal 1.0.0",
  "embedded-hal-async",
- "futures-util",
+ "futures-core",
 ]
 
 [[package]]
@@ -505,11 +503,11 @@ dependencies = [
 
 [[package]]
 name = "embassy-time-queue-utils"
-version = "0.1.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc55c748d16908a65b166d09ce976575fb8852cf60ccd06174092b41064d8f83"
+checksum = "80e2ee86063bd028a420a5fb5898c18c87a8898026da1d4c852af2c443d0a454"
 dependencies = [
- "embassy-executor",
+ "embassy-executor-timer-queue",
  "heapless",
 ]
 
@@ -809,8 +807,7 @@ dependencies = [
 
 [[package]]
 name = "esp32-ecdsa"
-version = "0.1.0"
-source = "git+https://github.com/MatthewCash/esp32-ecdsa.git#278f5d2ad20268be8f4fbbcf55e7c45183a915bd"
+version = "0.2.0"
 dependencies = [
  "esp-hal",
  "nb 1.1.0",
