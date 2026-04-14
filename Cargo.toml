@@ -15,7 +15,7 @@ num-traits = { version = "0.2.19", default-features = false }
 # Opional dependencies for tokio targets
 tokio = { version = "1.48.0", default-features = false, features = ["net", "sync", "time", "io-util", "macros"], optional = true }
 p256 = { version = "0.13.2", default-features = false, features = ["std", "ecdsa"], optional = true }
-rand = { version = "0.9.2", default-features = false, features = ["std", "os_rng"], optional = true }
+rand = { version = "0.9.3", default-features = false, features = ["std", "os_rng"], optional = true }
 
 
 # Optional dependencies for esp targets
