@@ -5,7 +5,7 @@ pub mod color_light;
 pub mod dimmable_light;
 pub mod switch;
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct NumericState<T: Copy = u32> {
     pub value: T,
     pub min: T,
@@ -13,7 +13,7 @@ pub struct NumericState<T: Copy = u32> {
     pub step: T,
 }
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct NumericProperties<T: Copy = u32> {
     pub min: T,
     pub max: T,

@@ -2,13 +2,13 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::device_types::NumericState;
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub enum FanDirection {
     Forward,
     Reverse,
 }
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CeilingFanState {
     pub fan_speed: NumericState,
     pub fan_direction: FanDirection,
