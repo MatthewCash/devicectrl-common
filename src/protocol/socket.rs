@@ -5,16 +5,29 @@ use serde_derive::{Deserialize, Serialize};
 extern crate alloc;
 
 #[cfg(feature = "alloc")]
-use alloc::string::ToString;
+use alloc::{string::ToString, vec::Vec};
 
+#[cfg(feature = "alloc")]
+use crate::DeviceType;
 use crate::{DeviceId, SceneId, UpdateNotification, UpdateRequest};
+
+#[cfg(feature = "alloc")]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+pub struct DeviceDescriptor {
+    pub device_id: DeviceId,
+    pub device_type: DeviceType,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
 pub enum ServerBoundSocketMessage {
     UpdateRequest(UpdateRequest),
     ActivateScene(SceneId),
-    StateQuery { device_id: DeviceId },
+    StateQuery {
+        device_id: DeviceId,
+    },
+    #[cfg(feature = "alloc")]
+    QueryCatalog,
 }
 
 pub type FailureMessage = ArrayString<100>;
@@ -26,6 +39,12 @@ pub enum ClientBoundSocketMessage {
     RequestReceived,
     UpdateNotification(UpdateNotification),
     Failure(Option<FailureMessage>),
+    #[cfg(feature = "alloc")]
+    Catalog {
+        devices: Vec<DeviceDescriptor>,
+        scenes: Vec<SceneId>,
+    },
+}
 }
 
 #[cfg(feature = "alloc")]

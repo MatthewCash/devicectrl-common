@@ -808,6 +808,7 @@ dependencies = [
 [[package]]
 name = "esp32-ecdsa"
 version = "0.2.0"
+source = "git+https://github.com/MatthewCash/esp32-ecdsa.git#009f60053a070a3d533aebc3e4b1635f83d04b59"
 dependencies = [
  "esp-hal",
  "nb 1.1.0",

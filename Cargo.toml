@@ -66,3 +66,6 @@ esp = [
 alloc = []
 
 std = ["alloc"]
+
+[dev-dependencies]
+serde_json = "1.0.142"
