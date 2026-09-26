@@ -45,7 +45,6 @@ pub enum ClientBoundSocketMessage {
         scenes: Vec<SceneId>,
     },
 }
-}
 
 #[cfg(feature = "alloc")]
 impl From<anyhow::Error> for ClientBoundSocketMessage {
