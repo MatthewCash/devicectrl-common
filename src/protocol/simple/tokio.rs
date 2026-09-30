@@ -11,7 +11,7 @@ use p256::{
 use rand::{TryRngCore, rngs::OsRng};
 use std::net::SocketAddr;
 use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
+    io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt},
     net::{TcpSocket, TcpStream},
     select,
     sync::mpsc,
@@ -27,6 +27,8 @@ const _: () = assert!(
     SIGNATURE_LEN == NistP256::ORDER.bits() / 8 * 2, // 8 bits per byte / 2 field elements
     "Length of two Nist p256 field elements differs from simple protocol's SIGNATURE_LEN"
 );
+
+const MAX_SIMPLE_PAYLOAD_LEN: usize = 4096;
 
 #[derive(Debug, Clone)]
 pub struct CryptoContext {
@@ -134,71 +136,33 @@ async fn run_connection(
 
     worker.incoming.send(TransportEvent::Connected).await?;
 
+    let (mut read, mut write) = stream.into_split();
+    let (incoming_tx, mut incoming_rx) = mpsc::channel(8);
+    let read_crypto = crypto.clone();
+
+    tokio::spawn(async move {
+        loop {
+            let message = read_message(&mut read, &mut expected_recv_nonce, &read_crypto).await;
+            if incoming_tx.send(message).await.is_err() {
+                break;
+            }
+        }
+    });
+
     loop {
-        // Read the next incoming message header OR send an outgoing message, whichever is ready first.
-        // We use read_exact for the nonce to avoid the partial-read FIXME in the original code.
-        let mut nonce_buf = [0u8; size_of::<u32>()];
-
         select! {
-            read_res = stream.read_exact(&mut nonce_buf) => {
-                read_res.context("failed to read nonce")?;
-                let recv_nonce = u32::from_be_bytes(nonce_buf);
-
-                expected_recv_nonce = expected_recv_nonce.wrapping_add(1);
-                if recv_nonce != expected_recv_nonce {
-                    bail!(
-                        "Server nonce did not match expected value! expected={}, got={}",
-                        expected_recv_nonce,
-                        recv_nonce
-                    );
-                }
-
-                let mut len_buf = [0u8; size_of::<u32>()];
-                stream
-                    .read_exact(&mut len_buf)
-                    .await
-                    .context("failed to read payload length")?;
-                let payload_len = u32::from_be_bytes(len_buf) as usize;
-
-                let mut payload = vec![0u8; payload_len];
-                stream
-                    .read_exact(&mut payload)
-                    .await
-                    .context("failed to read payload")?;
-
-                let mut sig_buf = [0u8; SIGNATURE_LEN];
-                stream
-                    .read_exact(&mut sig_buf)
-                    .await
-                    .context("failed to read signature")?;
-
-                // Verify signature over [nonce | len | payload]
-                let mut to_verify = Vec::with_capacity(size_of::<u32>() + size_of::<u32>() + payload.len());
-                to_verify.extend_from_slice(&recv_nonce.to_be_bytes());
-                to_verify.extend_from_slice(&(payload_len as u32).to_be_bytes());
-                to_verify.extend_from_slice(&payload);
-
-                crypto
-                    .server_public_key
-                    .verify(&to_verify, &Signature::from_slice(&sig_buf)?)
-                    .context("ecdsa verification failed")?;
-
-                match serde_json::from_slice::<DeviceBoundSimpleMessage>(&payload)
-                    .context("failed to parse message")
-                {
-                    Ok(msg) => {
-                         worker.incoming.send(TransportEvent::Message(msg)).await?;
-                    }
-                    Err(err) => {
-                         worker.incoming.send(TransportEvent::Error(err)).await?;
-                    }
+            maybe_message = incoming_rx.recv() => {
+                match maybe_message {
+                    Some(Ok(message)) => worker.incoming.send(TransportEvent::Message(message)).await?,
+                    Some(Err(err)) => return Err(err),
+                    None => bail!("incoming reader task closed"),
                 }
             }
 
             maybe_message = worker.outgoing.recv() => {
                 match maybe_message {
                     Some(message) => {
-                        send_message(&mut stream, &mut send_nonce, crypto, &message).await?;
+                        send_message(&mut write, &mut send_nonce, crypto, &message).await?;
                     }
                     None => {
                         bail!("outgoing channel closed");
@@ -207,6 +171,59 @@ async fn run_connection(
             }
         }
     }
+}
+
+async fn read_message(
+    read: &mut (impl AsyncRead + Unpin),
+    expected_recv_nonce: &mut u32,
+    crypto: &CryptoContext,
+) -> Result<DeviceBoundSimpleMessage> {
+    let mut nonce_buf = [0u8; size_of::<u32>()];
+    read.read_exact(&mut nonce_buf)
+        .await
+        .context("failed to read nonce")?;
+    let recv_nonce = u32::from_be_bytes(nonce_buf);
+
+    *expected_recv_nonce = expected_recv_nonce.wrapping_add(1);
+    if recv_nonce != *expected_recv_nonce {
+        bail!(
+            "Server nonce did not match expected value! expected={}, got={}",
+            *expected_recv_nonce,
+            recv_nonce
+        );
+    }
+
+    let mut len_buf = [0u8; size_of::<u32>()];
+    read.read_exact(&mut len_buf)
+        .await
+        .context("failed to read payload length")?;
+    let payload_len = u32::from_be_bytes(len_buf) as usize;
+
+    if payload_len > MAX_SIMPLE_PAYLOAD_LEN {
+        bail!("payload length exceeds maximum simple payload size");
+    }
+
+    let mut payload = vec![0u8; payload_len];
+    read.read_exact(&mut payload)
+        .await
+        .context("failed to read payload")?;
+
+    let mut sig_buf = [0u8; SIGNATURE_LEN];
+    read.read_exact(&mut sig_buf)
+        .await
+        .context("failed to read signature")?;
+
+    let mut to_verify = Vec::with_capacity(size_of::<u32>() + size_of::<u32>() + payload.len());
+    to_verify.extend_from_slice(&recv_nonce.to_be_bytes());
+    to_verify.extend_from_slice(&(payload_len as u32).to_be_bytes());
+    to_verify.extend_from_slice(&payload);
+
+    crypto
+        .server_public_key
+        .verify(&to_verify, &Signature::from_slice(&sig_buf)?)
+        .context("ecdsa verification failed")?;
+
+    serde_json::from_slice::<DeviceBoundSimpleMessage>(&payload).context("failed to parse message")
 }
 
 async fn send_identify_message(stream: &mut TcpStream, device_id: DeviceId) -> Result<()> {
@@ -226,7 +243,7 @@ async fn send_identify_message(stream: &mut TcpStream, device_id: DeviceId) -> R
 }
 
 async fn send_message(
-    stream: &mut TcpStream,
+    stream: &mut (impl AsyncWrite + Unpin),
     send_nonce: &mut u32,
     crypto: &CryptoContext,
     message: &ServerBoundSimpleMessage,

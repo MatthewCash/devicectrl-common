@@ -12,6 +12,17 @@ use crate::{UpdateCommand, UpdateNotification};
 
 pub type FailureMessage = ArrayString<100>;
 
+#[cfg(feature = "alloc")]
+fn failure_message(message: alloc::string::String) -> FailureMessage {
+    let mut arr_str = FailureMessage::new();
+    for ch in message.chars() {
+        if arr_str.try_push(ch).is_err() {
+            break;
+        }
+    }
+    arr_str
+}
+
 // Message sent from server to devices
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[non_exhaustive]
@@ -26,11 +37,7 @@ impl From<anyhow::Error> for DeviceBoundKryptonMessage {
     fn from(err: anyhow::Error) -> Self {
         let message = err.chain().next().map(|c| c.to_string());
 
-        Self::Failure(message.map(|message| {
-            let mut arr_str = FailureMessage::new();
-            arr_str.push_str(&message);
-            arr_str
-        }))
+        Self::Failure(message.map(failure_message))
     }
 }
 
@@ -49,11 +56,7 @@ impl From<anyhow::Error> for ServerBoundKryptonMessage {
     fn from(err: anyhow::Error) -> Self {
         let message = err.chain().next().map(|c| c.to_string());
 
-        Self::Failure(message.map(|message| {
-            let mut arr_str = FailureMessage::new();
-            arr_str.push_str(&message);
-            arr_str
-        }))
+        Self::Failure(message.map(failure_message))
     }
 }
 
