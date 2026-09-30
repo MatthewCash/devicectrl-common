@@ -91,10 +91,12 @@ impl From<UpdateRequest> for UpdateCommand {
     }
 }
 
-// Sent from devices to server and server to clients
+// Sent from devices to server and server to clients.
+//
+// A missing state means the device is unreachable. Devices always report
+// `Some` state; only servers send `None`, synthesized for offline devices.
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct UpdateNotification {
     pub device_id: DeviceId,
-    pub reachable: bool,
-    pub new_state: DeviceState,
+    pub new_state: Option<DeviceState>,
 }
