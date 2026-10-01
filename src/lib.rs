@@ -73,6 +73,7 @@ define_device_enums! {
 pub struct UpdateRequest {
     pub device_id: DeviceId,
     pub update: AttributeUpdate,
+    pub transition_ms: Option<u32>,
 }
 
 // Sent from server to devices
@@ -80,6 +81,7 @@ pub struct UpdateRequest {
 pub struct UpdateCommand {
     pub device_id: DeviceId,
     pub update: AttributeUpdate,
+    pub transition_ms: Option<u32>,
 }
 
 impl From<UpdateRequest> for UpdateCommand {
@@ -87,6 +89,7 @@ impl From<UpdateRequest> for UpdateCommand {
         Self {
             device_id: request.device_id,
             update: request.update,
+            transition_ms: request.transition_ms,
         }
     }
 }
